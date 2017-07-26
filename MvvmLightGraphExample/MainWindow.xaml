@@ -1,0 +1,177 @@
+﻿<Window
+    x:Class="MvvmLightGraphExample.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:MvvmLightGraphExample"
+    xmlns:viewmodel="clr-namespace:MvvmLightGraphExample.ViewModel"
+    Title="MVVM Light Application"
+    Width="1000"
+    Height="1000"
+    DataContext="{Binding Main, Source={StaticResource Locator}}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <viewmodel:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <ObjectDataProvider
+                x:Key="brushes"
+                MethodName="GetRandomBrush"
+                ObjectType="{x:Type local:RandomBrushes}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Skins/MainSkin.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <GroupBox
+            Margin="10"
+            Padding="10"
+            Header="Current operation">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        Foreground="MediumPurple"
+                        Text="{Binding}" />
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <StackPanel>
+                <RadioButton
+                    Name="radioAddNode"
+                    Content="Add Node"
+                    IsChecked="{Binding Graph.IsAddNode}" />
+                <RadioButton
+                    Name="radioAddEdge"
+                    Content="Add Edge"
+                    IsChecked="{Binding Graph.IsAddEdge}" />
+                <Button Click="Button_Click" Content="a" />
+
+            </StackPanel>
+        </GroupBox>
+
+        <ListBox
+            Name="listBoxEdges"
+            Grid.Row="1"
+            Background="LightCoral"
+            ItemsSource="{Binding Graph.Edges}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Line
+                        Stroke="Black"
+                        StrokeThickness="2"
+                        X1="{Binding Path=StartNode.XCenter}"
+                        X2="{Binding Path=EndNode.XCenter}"
+                        Y1="{Binding Path=StartNode.YCenter}"
+                        Y2="{Binding Path=EndNode.YCenter}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding Graph.AddEgeCommand, ElementName=listBoxEdges}" CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Line>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ItemsControl
+            x:Name="listBoxNodes"
+            Grid.Row="1"
+            Background="Transparent"
+            ItemsSource="{Binding Graph.Nodes}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas
+                        Name="canvasNodes"
+                        Background="Transparent"
+                        ClipToBounds="True">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding Graph.AddNodeCommand}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseWheel">
+                                <cmd:EventToCommand Command="{Binding Graph.ZoomCanvasCommand}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Name="gridNode" Background="Transparent">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseMove">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseMovedCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseLeftButtonDownCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseLeftButtonUpCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseDown">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.UnSelectAllNodesMouseDownCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseWheel">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.ZoomCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.DeleteNodeMouseRightButtonDownCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+
+                        </i:Interaction.Triggers>
+                        <Ellipse
+                            Name="ellipse"
+                            Width="{Binding Size}"
+                            Height="{Binding Size}"
+                            Fill="{Binding Source={StaticResource brushes}}"
+                            Stroke="{Binding IsSelected, Mode=TwoWay, Converter={StaticResource BoolToColorConverter}}"
+                            StrokeThickness="2">
+
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <cmd:EventToCommand Command="{Binding DataContext.Graph.MouseLeftButtonDownNodeToAddEdgeCommand, ElementName=listBoxNodes}" CommandParameter="{Binding}" />
+
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+
+                        </Ellipse>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="{Binding}"
+                            Foreground="White"
+                            Text="{Binding Path=Index}" />
+                    </Grid>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+    </Grid>
+</Window>
