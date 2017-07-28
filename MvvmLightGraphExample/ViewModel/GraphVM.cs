@@ -52,23 +52,11 @@ namespace MvvmLightGraphExample.ViewModel
 
         public GraphVM()
         {
-            this.Nodes = new ObservableCollection<NodeVM>();
-            this.Edges = new ObservableCollection<EdgeVM>();
+            Nodes = new ObservableCollection<NodeVM>();
+            Edges = new ObservableCollection<EdgeVM>();
             nextIndex = 1;
         }
-        public ICommand EdgeAddCommand => new RelayCommand<MouseButtonEventArgs>(AddEdge);
-        private void AddEdge(MouseButtonEventArgs e)
-        {
-            if (IsAddEdge == true)
-            {
-                if (edge.StartNode != null && edge.EndNode != null && edge.StartNode != edge.EndNode)
-                {
-                    Edges.Add(edge);
-                    edge = null;
-                }
-            }
-        }
-
+        
         public void AddEdge(NodeVM startNode, NodeVM endNode)
         {
             this.Edges.Add(new EdgeVM(startNode, endNode));
@@ -232,6 +220,9 @@ namespace MvvmLightGraphExample.ViewModel
 
                 if (obj.Delta > 0)
                 {
+
+                    //st.ScaleX *= ScaleRate;
+                    //st.ScaleY *= ScaleRate;
                     zoom += 1;
                 }
                 else if (obj.Delta < 0)
@@ -239,6 +230,13 @@ namespace MvvmLightGraphExample.ViewModel
                     zoom -= 1;
                 }
             }
+        }
+
+        public ICommand DeleteEdgeMouseRightButtonDownCommand => new RelayCommand<EdgeVM>(DeleteEdge);
+        private void DeleteEdge(EdgeVM obj)
+        {
+            var element = obj as EdgeVM;
+            Edges.Remove(element);
         }
 
         public ICommand DeleteNodeMouseRightButtonDownCommand => new RelayCommand<MouseButtonEventArgs>(DelateNode);
@@ -256,6 +254,8 @@ namespace MvvmLightGraphExample.ViewModel
             {
                 Edges.Remove(edge);
             }
-        }
+        }        
+
+        
     }
 }

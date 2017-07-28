@@ -40,7 +40,7 @@ namespace MvvmLightGraphExample
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ConvertToBitmapSource(listBoxNodes as UIElement, textBox.Text);
+            ConvertToBitmapSource(ListOfCanvasElements as UIElement, textBox.Text);
         }
     }
 

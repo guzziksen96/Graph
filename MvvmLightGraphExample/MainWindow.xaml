@@ -103,7 +103,7 @@
         </ListBox>-->
 
         <ItemsControl
-            x:Name="listBoxNodes"
+            x:Name="ListOfCanvasElements"
             Grid.Row="1"
             Background="LightCoral"
             ItemsSource="{Binding Source={StaticResource ElementsCollection}}">
@@ -118,9 +118,11 @@
                         Y1="{Binding Path=StartNode.YCenter}"
                         Y2="{Binding Path=EndNode.YCenter}">
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseLeftButtonDown">
-                                <cmd:EventToCommand Command="{Binding Graph.AddEgeCommand, ElementName=listBoxEdges}" CommandParameter="{Binding}" />
+
+                            <i:EventTrigger EventName="MouseRightButtonDown">
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.DeleteEdgeMouseRightButtonDownCommand, ElementName=ListOfCanvasElements}" CommandParameter="{Binding}" />
                             </i:EventTrigger>
+                            
                         </i:Interaction.Triggers>
                     </Line>
                 </DataTemplate>
@@ -128,28 +130,28 @@
                     <Grid Name="gridNode" Background="Transparent">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseMove">
-                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseMovedCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseMovedCommand, ElementName=ListOfCanvasElements}" PassEventArgsToCommand="True" />
 
                             </i:EventTrigger>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
-                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseLeftButtonDownCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseLeftButtonDownCommand, ElementName=ListOfCanvasElements}" PassEventArgsToCommand="True" />
 
                             </i:EventTrigger>
 
                             <i:EventTrigger EventName="MouseLeftButtonUp">
-                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseLeftButtonUpCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.NodeMouseLeftButtonUpCommand, ElementName=ListOfCanvasElements}" PassEventArgsToCommand="True" />
                             </i:EventTrigger>
 
                             <i:EventTrigger EventName="MouseDown">
-                                <cmd:EventToCommand Command="{Binding DataContext.Graph.UnSelectAllNodesMouseDownCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.UnSelectAllNodesMouseDownCommand, ElementName=ListOfCanvasElements}" PassEventArgsToCommand="True" />
                             </i:EventTrigger>
 
                             <i:EventTrigger EventName="MouseWheel">
-                                <cmd:EventToCommand Command="{Binding DataContext.Graph.ZoomCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.ZoomCommand, ElementName=ListOfCanvasElements}" PassEventArgsToCommand="True" />
                             </i:EventTrigger>
 
                             <i:EventTrigger EventName="MouseRightButtonDown">
-                                <cmd:EventToCommand Command="{Binding DataContext.Graph.DeleteNodeMouseRightButtonDownCommand, ElementName=listBoxNodes}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding DataContext.Graph.DeleteNodeMouseRightButtonDownCommand, ElementName=ListOfCanvasElements}" PassEventArgsToCommand="True" />
                             </i:EventTrigger>
 
                         </i:Interaction.Triggers>
@@ -163,7 +165,7 @@
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseLeftButtonDown">
-                                    <cmd:EventToCommand Command="{Binding DataContext.Graph.MouseLeftButtonDownNodeToAddEdgeCommand, ElementName=listBoxNodes}" CommandParameter="{Binding}" />
+                                    <cmd:EventToCommand Command="{Binding DataContext.Graph.MouseLeftButtonDownNodeToAddEdgeCommand, ElementName=ListOfCanvasElements}" CommandParameter="{Binding}" />
 
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
@@ -181,10 +183,12 @@
             </ItemsControl.Resources>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
+                    
                     <Canvas
                         Name="canvasNodes"
                         Background="Transparent"
                         ClipToBounds="True">
+                        
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
                                 <cmd:EventToCommand Command="{Binding Graph.AddNodeCommand}" PassEventArgsToCommand="True" />
