@@ -13,6 +13,13 @@
 
     <Window.Resources>
         <ResourceDictionary>
+            <CollectionViewSource x:Key="ViewSource1" Source="{Binding Graph.Nodes}" />
+            <CollectionViewSource x:Key="ViewSource2" Source="{Binding Graph.Edges}" />
+
+            <CompositeCollection x:Key="ElementsCollection">
+                <CollectionContainer Collection="{Binding Source={StaticResource ViewSource2}}" />
+                <CollectionContainer Collection="{Binding Source={StaticResource ViewSource1}}" />
+            </CompositeCollection>
 
             <viewmodel:BoolToColorConverter x:Key="BoolToColorConverter" />
             <ObjectDataProvider
@@ -24,7 +31,6 @@
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>
-
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot">
@@ -49,18 +55,25 @@
             <StackPanel>
                 <RadioButton
                     Name="radioAddNode"
+                    Margin="5"
                     Content="Add Node"
                     IsChecked="{Binding Graph.IsAddNode}" />
                 <RadioButton
                     Name="radioAddEdge"
+                    Margin="5"
                     Content="Add Edge"
                     IsChecked="{Binding Graph.IsAddEdge}" />
-                <Button Click="Button_Click" Content="a" />
-
+                <Button
+                    Name="SnapshotButton"
+                    Margin="5"
+                    Click="Button_Click"
+                    Content="Snapshot" />
+                <Label Name="label" Content="Constelation name" />
+                <TextBox Name="textBox" Margin="5" />
             </StackPanel>
         </GroupBox>
 
-        <ListBox
+        <!--<ListBox
             Name="listBoxEdges"
             Grid.Row="1"
             Background="LightCoral"
@@ -87,31 +100,31 @@
                     </Line>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-        </ListBox>
+        </ListBox>-->
+
         <ItemsControl
             x:Name="listBoxNodes"
             Grid.Row="1"
-            Background="Transparent"
-            ItemsSource="{Binding Graph.Nodes}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas
-                        Name="canvasNodes"
-                        Background="Transparent"
-                        ClipToBounds="True">
+            Background="LightCoral"
+            ItemsSource="{Binding Source={StaticResource ElementsCollection}}">
+
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type viewmodel:EdgeVM}">
+                    <Line
+                        Stroke="Black"
+                        StrokeThickness="2"
+                        X1="{Binding Path=StartNode.XCenter}"
+                        X2="{Binding Path=EndNode.XCenter}"
+                        Y1="{Binding Path=StartNode.YCenter}"
+                        Y2="{Binding Path=EndNode.YCenter}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
-                                <cmd:EventToCommand Command="{Binding Graph.AddNodeCommand}" PassEventArgsToCommand="True" />
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="MouseWheel">
-                                <cmd:EventToCommand Command="{Binding Graph.ZoomCanvasCommand}" PassEventArgsToCommand="True" />
+                                <cmd:EventToCommand Command="{Binding Graph.AddEgeCommand, ElementName=listBoxEdges}" CommandParameter="{Binding}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </Canvas>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
+                    </Line>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodel:NodeVM}">
                     <Grid Name="gridNode" Background="Transparent">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseMove">
@@ -163,9 +176,27 @@
                             Foreground="White"
                             Text="{Binding Path=Index}" />
                     </Grid>
-
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
+
+            </ItemsControl.Resources>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas
+                        Name="canvasNodes"
+                        Background="Transparent"
+                        ClipToBounds="True">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding Graph.AddNodeCommand}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseWheel">
+                                <cmd:EventToCommand Command="{Binding Graph.ZoomCanvasCommand}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
             <ItemsControl.ItemContainerStyle>
                 <Style>
                     <Setter Property="Canvas.Left" Value="{Binding Path=X}" />

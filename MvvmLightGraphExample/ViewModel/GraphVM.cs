@@ -42,6 +42,8 @@ namespace MvvmLightGraphExample.ViewModel
                 RaisePropertyChanged();
             }
         }
+
+
         public ObservableCollection<NodeVM> Nodes { get; private set; }
         public ObservableCollection<EdgeVM> Edges { get; private set; }
 

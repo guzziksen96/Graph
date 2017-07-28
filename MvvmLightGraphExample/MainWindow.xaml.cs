@@ -20,10 +20,10 @@ namespace MvvmLightGraphExample
             Closing += (s, e) => ViewModelLocator.Cleanup();
         }
 
-        public void ConvertToBitmapSource(UIElement element)
+        public void ConvertToBitmapSource(UIElement element, string fileName)
         {
             var target = new RenderTargetBitmap(
-            (int)element.RenderSize.Width, (int)element.RenderSize.Height,
+            (int)element.RenderSize.Width, (int)element.RenderSize.Height + 100,
             96, 96, PixelFormats.Pbgra32);
             target.Render(element);
 
@@ -31,7 +31,8 @@ namespace MvvmLightGraphExample
             var outputFrame = BitmapFrame.Create(target);
             encoder.Frames.Add(outputFrame);
 
-            using (var file = File.OpenWrite("C:\\Users\\PLKLGUZ\\Downloads\\TestImage.png"))
+
+            using (var file = File.OpenWrite("C:\\Users\\PLKLGUZ\\Downloads\\"+fileName+".png"))
             {
                 encoder.Save(file);
             }
@@ -39,7 +40,7 @@ namespace MvvmLightGraphExample
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ConvertToBitmapSource(listBoxNodes as UIElement);
+            ConvertToBitmapSource(listBoxNodes as UIElement, textBox.Text);
         }
     }
 
