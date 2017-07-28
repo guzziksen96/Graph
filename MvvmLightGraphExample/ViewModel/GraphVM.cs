@@ -129,7 +129,6 @@ namespace MvvmLightGraphExample.ViewModel
                 }
             }
         }
-
         public ICommand NodeMouseLeftButtonDownCommand => new RelayCommand<MouseButtonEventArgs>(NodeMouseLeftButtonDown);
         private void NodeMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -157,7 +156,6 @@ namespace MvvmLightGraphExample.ViewModel
                 endNode = null;
             }
         }
-
         public ICommand NodeMouseLeftButtonUpCommand => new RelayCommand<MouseButtonEventArgs>(NodeMouseLeftButtonUp);
         private void NodeMouseLeftButtonUp(MouseButtonEventArgs e)
         {
@@ -168,7 +166,6 @@ namespace MvvmLightGraphExample.ViewModel
                 previousPoint = null;
             }
         }
-
         public ICommand UnSelectAllNodesMouseDownCommand => new RelayCommand<MouseButtonEventArgs>(UnSelectAllNodes);
 
         private void UnSelectAllNodes(MouseButtonEventArgs e)
@@ -181,7 +178,6 @@ namespace MvvmLightGraphExample.ViewModel
                 }
             }
         }
-
         public ICommand ZoomCommand => new RelayCommand<MouseWheelEventArgs>(Zoom);
 
         private void Zoom(MouseWheelEventArgs e)
@@ -202,13 +198,13 @@ namespace MvvmLightGraphExample.ViewModel
             }
         }
         public ICommand ZoomCanvasCommand => new RelayCommand<MouseWheelEventArgs>(ZoomCanvas);
-
-        //TODO Zooming
+        
+        public double x = 1.0;
         private void ZoomCanvas(MouseWheelEventArgs e)
         {
             if (listOfChosenNodes.Count == 0)
             {
-                Matrix mx = new Matrix(1.1, 0.0, 0.0, 1.1, 0.0, 0.0);
+                Matrix mx = new Matrix(x, 0.0, 0.0, x, 0.0, 0.0);
 
                 var canvas = e.OriginalSource as Canvas;
                 var position = e.GetPosition(canvas);
@@ -216,41 +212,18 @@ namespace MvvmLightGraphExample.ViewModel
                 var transform = canvas.RenderTransform as MatrixTransform;
 
                 var matrix = transform.Matrix;
-                var scale = e.Delta >= 0 ? 1.1 : (1.0 / 1.1); 
+                var scale = e.Delta >= 0 ? x += 0.1 : x -= 0.1; 
 
                 matrix.ScaleAtPrepend(scale, scale, position.X, position.Y);
                 transform.Matrix = matrix;
-              
-                ////double height = canvas.ActualHeight;
-                ////double width = canvas.ActualWidth;
-                //double zoom = obj.Delta;
-                ////height += 2;
-                ////width += 2;
-                ////ScaleTransform sc = new ScaleTransform(width, height);
-                ////canvas.LayoutTransform = sc;
-                ////canvas.UpdateLayout();
-
-                //if (obj.Delta > 0)
-                //{
-
-                //    //st.ScaleX *= ScaleRate;
-                //    //st.ScaleY *= ScaleRate;
-                //    zoom += 1;
-                //}
-                //else if (obj.Delta < 0)
-                //{
-                //    zoom -= 1;
-                //}
             }
         }
-
         public ICommand DeleteEdgeMouseRightButtonDownCommand => new RelayCommand<EdgeVM>(DeleteEdge);
         private void DeleteEdge(EdgeVM obj)
         {
             var element = obj as EdgeVM;
             Edges.Remove(element);
         }
-
         public ICommand DeleteNodeMouseRightButtonDownCommand => new RelayCommand<MouseButtonEventArgs>(DelateNode);
 
         private void DelateNode(MouseButtonEventArgs obj)
@@ -266,8 +239,6 @@ namespace MvvmLightGraphExample.ViewModel
             {
                 Edges.Remove(edge);
             }
-        }        
-
-        
+        } 
     }
 }
