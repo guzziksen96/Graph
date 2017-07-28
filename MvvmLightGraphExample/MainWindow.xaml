@@ -188,7 +188,9 @@
                         Name="canvasNodes"
                         Background="Transparent"
                         ClipToBounds="True">
-                        
+                        <Canvas.RenderTransform>
+                            <MatrixTransform/>
+                        </Canvas.RenderTransform>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
                                 <cmd:EventToCommand Command="{Binding Graph.AddNodeCommand}" PassEventArgsToCommand="True" />

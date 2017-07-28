@@ -204,31 +204,43 @@ namespace MvvmLightGraphExample.ViewModel
         public ICommand ZoomCanvasCommand => new RelayCommand<MouseWheelEventArgs>(ZoomCanvas);
 
         //TODO Zooming
-        private void ZoomCanvas(MouseWheelEventArgs obj)
+        private void ZoomCanvas(MouseWheelEventArgs e)
         {
             if (listOfChosenNodes.Count == 0)
             {
-                var canvas = obj.OriginalSource as Canvas;
-                //double height = canvas.ActualHeight;
-                //double width = canvas.ActualWidth;
-                double zoom = obj.Delta;
-                //height += 2;
-                //width += 2;
-                //ScaleTransform sc = new ScaleTransform(width, height);
-                //canvas.LayoutTransform = sc;
-                //canvas.UpdateLayout();
+                Matrix mx = new Matrix(1.1, 0.0, 0.0, 1.1, 0.0, 0.0);
 
-                if (obj.Delta > 0)
-                {
+                var canvas = e.OriginalSource as Canvas;
+                var position = e.GetPosition(canvas);
+                canvas.RenderTransform = new MatrixTransform(mx);
+                var transform = canvas.RenderTransform as MatrixTransform;
 
-                    //st.ScaleX *= ScaleRate;
-                    //st.ScaleY *= ScaleRate;
-                    zoom += 1;
-                }
-                else if (obj.Delta < 0)
-                {
-                    zoom -= 1;
-                }
+                var matrix = transform.Matrix;
+                var scale = e.Delta >= 0 ? 1.1 : (1.0 / 1.1); 
+
+                matrix.ScaleAtPrepend(scale, scale, position.X, position.Y);
+                transform.Matrix = matrix;
+              
+                ////double height = canvas.ActualHeight;
+                ////double width = canvas.ActualWidth;
+                //double zoom = obj.Delta;
+                ////height += 2;
+                ////width += 2;
+                ////ScaleTransform sc = new ScaleTransform(width, height);
+                ////canvas.LayoutTransform = sc;
+                ////canvas.UpdateLayout();
+
+                //if (obj.Delta > 0)
+                //{
+
+                //    //st.ScaleX *= ScaleRate;
+                //    //st.ScaleY *= ScaleRate;
+                //    zoom += 1;
+                //}
+                //else if (obj.Delta < 0)
+                //{
+                //    zoom -= 1;
+                //}
             }
         }
 
